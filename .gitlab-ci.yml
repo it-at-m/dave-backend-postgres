@@ -5,7 +5,7 @@ variables:
 
 # Include ci-file from internal Gitlab project
 include:
-  - project: "dave-internal"
+  - project: "dave/dave-internal"
     ref: "$INCLUDE_CICD_REF_BRANCH"
     file:
-      - "dave-backend/gitlab-ci.yml"
+      - "dave-backend/.gitlab-ci.yml"
