@@ -13,7 +13,7 @@ jobs:
       - name: Debug
         id: mydebug
         run: |
-          echo "Current version: $GITHUB_WORKSPACE"
+          echo "Current wsp: ${GITHUB_WORKSPACE}"
           pwd
           ls
           >> $GITHUB_OUTPUT
