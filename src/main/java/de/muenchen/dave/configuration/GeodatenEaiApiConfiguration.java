@@ -12,6 +12,7 @@ import org.springframework.security.oauth2.client.AuthorizedClientServiceOAuth2A
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
@@ -66,13 +67,25 @@ public class GeodatenEaiApiConfiguration {
 
     private WebClient webClient(
             final ClientRegistrationRepository clientRegistrationRepository,
-            final OAuth2AuthorizedClientService authorizedClientService) {
+            final OAuth2AuthorizedClientService authorizedClientService/*,
+            final WebClient.Builder injectedPreConfiguredBuilder*/) {
         final var oauth = new ServletOAuth2AuthorizedClientExchangeFilterFunction(
                 new AuthorizedClientServiceOAuth2AuthorizedClientManager(
                         clientRegistrationRepository, authorizedClientService));
         oauth.setDefaultClientRegistrationId("keycloak");
         return WebClient.builder()
+                .exchangeStrategies(useMaxMemory())
                 .apply(oauth.oauth2Configuration())
+                .build();
+    }
+
+    private static ExchangeStrategies useMaxMemory() {
+        long totalMemory = Runtime.getRuntime().maxMemory();
+
+        return ExchangeStrategies.builder()
+                .codecs(configurer -> configurer.defaultCodecs()
+                        .maxInMemorySize((int) totalMemory)
+                )
                 .build();
     }
 }

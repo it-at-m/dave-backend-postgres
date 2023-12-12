@@ -4,6 +4,7 @@ import de.muenchen.dave.geodateneai.gen.api.MesswerteMessquerschnittApi;
 import de.muenchen.dave.geodateneai.gen.model.GetMesswerteIntervallMessquerschnittResponse;
 import de.muenchen.dave.geodateneai.gen.model.GetMesswerteOfMessquerschnittRequest;
 import de.muenchen.dave.geodateneai.gen.model.GetMesswerteTagesaggregatMessquerschnittResponse;
+import de.muenchen.dave.geodateneai.gen.model.LoadDataResponse;
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Set;
@@ -19,6 +20,18 @@ import reactor.core.publisher.Mono;
 public class MesswerteMessquerschnittService {
 
     private final MesswerteMessquerschnittApi messwerteMessquerschnittApi;
+
+    public LoadDataResponse loadData() {
+        //        final GetMesswerteOfMessquerschnittRequest request = new GetMesswerteOfMessquerschnittRequest();
+        //        // Anhand der MesstellenId die entsprechenden MessquerschnittIds ermitteln
+        //        request.setMessquerschnittIds(Set.of(messstelleId, 123L));
+        //        request.setTagesTyp(GetMesswerteOfMessquerschnittRequest.TagesTypEnum.fromValue(tagesTyp));
+        //        request.setZeitpunktStart(LocalDate.parse(von));
+        //        request.setZeitpunktEnde(LocalDate.parse(bis));
+        final Mono<ResponseEntity<LoadDataResponse>> data = messwerteMessquerschnittApi.loadDataWithHttpInfo();
+        return Objects.requireNonNull(data.block()).getBody();
+
+    }
 
     /**
      * Diese Methode ruft die angefragten MesswerteIntervalle eines Messquerschnitts aus der

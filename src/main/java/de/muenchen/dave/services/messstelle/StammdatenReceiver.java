@@ -31,7 +31,7 @@ public class StammdatenReceiver {
      * Diese Methode laedt regelmaessig alle relevanten Messstellen aus MobidaM.
      * Wie oft das geschieht, kann in der application.yml geändert werden.
      */
-    @Scheduled(cron = "${dave.messstelle.cron}")
+//    @Scheduled(cron = "${dave.messstelle.cron}")
     @Transactional
     public void loadMessstellen() {
         log.info("#loadMessstellen from MobidaM");

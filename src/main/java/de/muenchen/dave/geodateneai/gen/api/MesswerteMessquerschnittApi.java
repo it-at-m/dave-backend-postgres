@@ -6,6 +6,7 @@ import de.muenchen.dave.geodateneai.gen.model.GetMesswerteIntervallMessquerschni
 import de.muenchen.dave.geodateneai.gen.model.GetMesswerteOfMessquerschnittRequest;
 import de.muenchen.dave.geodateneai.gen.model.GetMesswerteTagesaggregatMessquerschnittResponse;
 import de.muenchen.dave.geodateneai.gen.model.InformationResponseDto;
+import de.muenchen.dave.geodateneai.gen.model.LoadDataResponse;
 
 import java.util.HashMap;
 import java.util.List;
@@ -204,5 +205,73 @@ public class MesswerteMessquerschnittApi {
      */
     public ResponseSpec getMesswerteTagesaggregatWithResponseSpec(GetMesswerteOfMessquerschnittRequest getMesswerteOfMessquerschnittRequest) throws WebClientResponseException {
         return getMesswerteTagesaggregatRequestCreation(getMesswerteOfMessquerschnittRequest);
+    }
+    /**
+     * Holt die MesswerteIntervalle zu einem Messquerschnitt in einem bestimmten Zeitraum.
+     * 
+     * <p><b>200</b> - MesswerteIntervalle erfolgreich abgefragt.
+     * <p><b>500</b> - Bei der Erstellung oder Durchführung des Requests ist ein Fehler aufgetreten.
+     * @return LoadDataResponse
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
+    private ResponseSpec loadDataRequestCreation() throws WebClientResponseException {
+        Object postBody = null;
+        // create path and map variables
+        final Map<String, Object> pathParams = new HashMap<String, Object>();
+
+        final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<String, String>();
+        final HttpHeaders headerParams = new HttpHeaders();
+        final MultiValueMap<String, String> cookieParams = new LinkedMultiValueMap<String, String>();
+        final MultiValueMap<String, Object> formParams = new LinkedMultiValueMap<String, Object>();
+
+        final String[] localVarAccepts = { 
+            "*/*"
+        };
+        final List<MediaType> localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
+        final String[] localVarContentTypes = { };
+        final MediaType localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
+
+        String[] localVarAuthNames = new String[] {  };
+
+        ParameterizedTypeReference<LoadDataResponse> localVarReturnType = new ParameterizedTypeReference<LoadDataResponse>() {};
+        return apiClient.invokeAPI("/messwerte/messquerschnitt/loaddata", HttpMethod.POST, pathParams, queryParams, postBody, headerParams, cookieParams, formParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
+    }
+
+    /**
+     * Holt die MesswerteIntervalle zu einem Messquerschnitt in einem bestimmten Zeitraum.
+     * 
+     * <p><b>200</b> - MesswerteIntervalle erfolgreich abgefragt.
+     * <p><b>500</b> - Bei der Erstellung oder Durchführung des Requests ist ein Fehler aufgetreten.
+     * @return LoadDataResponse
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
+    public Mono<LoadDataResponse> loadData() throws WebClientResponseException {
+        ParameterizedTypeReference<LoadDataResponse> localVarReturnType = new ParameterizedTypeReference<LoadDataResponse>() {};
+        return loadDataRequestCreation().bodyToMono(localVarReturnType);
+    }
+
+    /**
+     * Holt die MesswerteIntervalle zu einem Messquerschnitt in einem bestimmten Zeitraum.
+     * 
+     * <p><b>200</b> - MesswerteIntervalle erfolgreich abgefragt.
+     * <p><b>500</b> - Bei der Erstellung oder Durchführung des Requests ist ein Fehler aufgetreten.
+     * @return ResponseEntity&lt;LoadDataResponse&gt;
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
+    public Mono<ResponseEntity<LoadDataResponse>> loadDataWithHttpInfo() throws WebClientResponseException {
+        ParameterizedTypeReference<LoadDataResponse> localVarReturnType = new ParameterizedTypeReference<LoadDataResponse>() {};
+        return loadDataRequestCreation().toEntity(localVarReturnType);
+    }
+
+    /**
+     * Holt die MesswerteIntervalle zu einem Messquerschnitt in einem bestimmten Zeitraum.
+     * 
+     * <p><b>200</b> - MesswerteIntervalle erfolgreich abgefragt.
+     * <p><b>500</b> - Bei der Erstellung oder Durchführung des Requests ist ein Fehler aufgetreten.
+     * @return ResponseSpec
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
+    public ResponseSpec loadDataWithResponseSpec() throws WebClientResponseException {
+        return loadDataRequestCreation();
     }
 }

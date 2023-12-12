@@ -1,6 +1,7 @@
 package de.muenchen.dave.controller;
 
 import de.muenchen.dave.domain.dtos.LeseZaehlstelleDTO;
+import de.muenchen.dave.domain.dtos.LoadDataDTO;
 import de.muenchen.dave.domain.dtos.NextZaehlstellennummerDTO;
 import de.muenchen.dave.domain.dtos.bearbeiten.BackendIdDTO;
 import de.muenchen.dave.domain.dtos.bearbeiten.BearbeiteZaehlstelleDTO;
@@ -8,10 +9,13 @@ import de.muenchen.dave.domain.dtos.laden.LadeZaehlstelleWithUnreadMessageDTO;
 import de.muenchen.dave.exceptions.BrokenInfrastructureException;
 import de.muenchen.dave.exceptions.DataNotFoundException;
 import de.muenchen.dave.exceptions.ResourceNotFoundException;
+import de.muenchen.dave.geodateneai.gen.model.LoadDataResponse;
 import de.muenchen.dave.security.SecurityContextInformationExtractor;
+import de.muenchen.dave.services.MesswerteMessquerschnittService;
 import de.muenchen.dave.services.ZaehlstelleIndexService;
 import java.util.List;
 import javax.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,6 +32,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @RequestMapping(value = "/zaehlstelle")
 @RestController
+@RequiredArgsConstructor
 @Slf4j
 @PreAuthorize("hasAnyRole(T(de.muenchen.dave.security.AuthoritiesEnum).ANWENDER.name(), " +
         "T(de.muenchen.dave.security.AuthoritiesEnum).POWERUSER.name())")
@@ -37,9 +42,20 @@ public class ZaehlstelleController {
     private static final String REQUEST_PARAMETER_PARTICIPANT = "participant";
 
     private final ZaehlstelleIndexService indexService;
+    private final MesswerteMessquerschnittService messwerteMessquerschnittService;
 
-    public ZaehlstelleController(final ZaehlstelleIndexService indexService) {
-        this.indexService = indexService;
+    @GetMapping(value = "/loadData", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Transactional(readOnly = true)
+    public ResponseEntity<LoadDataDTO> loadData() {
+        try {
+            LoadDataResponse res = this.messwerteMessquerschnittService.loadData();
+            LoadDataDTO dto = new LoadDataDTO();
+            dto.setData(res.getData());
+            return ResponseEntity.ok(dto);
+        } catch (final Exception e) {
+            log.error("Error loadData", e);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error loadData");
+        }
     }
 
     @GetMapping(value = "/byId", produces = MediaType.APPLICATION_JSON_VALUE)
