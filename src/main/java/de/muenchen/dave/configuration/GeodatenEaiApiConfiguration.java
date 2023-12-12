@@ -67,8 +67,10 @@ public class GeodatenEaiApiConfiguration {
 
     private WebClient webClient(
             final ClientRegistrationRepository clientRegistrationRepository,
-            final OAuth2AuthorizedClientService authorizedClientService/*,
-            final WebClient.Builder injectedPreConfiguredBuilder*/) {
+            final OAuth2AuthorizedClientService authorizedClientService/*
+                                                                        * ,
+                                                                        * final WebClient.Builder injectedPreConfiguredBuilder
+                                                                        */) {
         final var oauth = new ServletOAuth2AuthorizedClientExchangeFilterFunction(
                 new AuthorizedClientServiceOAuth2AuthorizedClientManager(
                         clientRegistrationRepository, authorizedClientService));
@@ -84,8 +86,7 @@ public class GeodatenEaiApiConfiguration {
 
         return ExchangeStrategies.builder()
                 .codecs(configurer -> configurer.defaultCodecs()
-                        .maxInMemorySize((int) totalMemory)
-                )
+                        .maxInMemorySize((int) totalMemory))
                 .build();
     }
 }

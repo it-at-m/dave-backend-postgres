@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +30,7 @@ public class StammdatenReceiver {
      * Diese Methode laedt regelmaessig alle relevanten Messstellen aus MobidaM.
      * Wie oft das geschieht, kann in der application.yml geändert werden.
      */
-//    @Scheduled(cron = "${dave.messstelle.cron}")
+    //    @Scheduled(cron = "${dave.messstelle.cron}")
     @Transactional
     public void loadMessstellen() {
         log.info("#loadMessstellen from MobidaM");
