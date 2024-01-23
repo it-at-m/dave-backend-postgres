@@ -4,6 +4,7 @@
  */
 package de.muenchen.dave.services.processzaehldaten;
 
+import de.muenchen.dave.MyDatenService;
 import de.muenchen.dave.configuration.CachingConfiguration;
 import de.muenchen.dave.domain.Fahrbeziehung;
 import de.muenchen.dave.domain.Zeitintervall;
@@ -67,12 +68,15 @@ public class ProcessZaehldatenBelastungsplanService {
 
     private final LadeZaehldatenService ladeZaehldatenService;
 
+    private final MyDatenService myDatenService;
+
     public ProcessZaehldatenBelastungsplanService(final ZeitintervallRepository zeitintervallRepository,
             final ZaehlstelleIndex zaehlstelleIndex,
-            final LadeZaehldatenService ladeZaehldatenService) {
+            final LadeZaehldatenService ladeZaehldatenService, final MyDatenService myDatenService) {
         this.zeitintervallRepository = zeitintervallRepository;
         this.zaehlstelleIndex = zaehlstelleIndex;
         this.ladeZaehldatenService = ladeZaehldatenService;
+        this.myDatenService = myDatenService;
     }
 
     /**
@@ -326,10 +330,11 @@ public class ProcessZaehldatenBelastungsplanService {
      * @throws DataNotFoundException falls die {@link Zaehlstelle} oder die {@link Zaehlung}
      *             * nicht aus den DBs extrahiert werden kann.
      */
-    @Cacheable(value = CachingConfiguration.LADE_BELASTUNGSPLAN_DTO, key = "{#p0, #p1}")
+//    @Cacheable(value = CachingConfiguration.LADE_BELASTUNGSPLAN_DTO, key = "{#p0, #p1}")
     public LadeBelastungsplanDTO getBelastungsplanDTO(final String zaehlungId,
             final OptionsDTO options) throws DataNotFoundException {
         log.debug(String.format("Zugriff auf #getBelastungsplanDTO mit %s und %s", zaehlungId, options.toString()));
+        System.out.println("Hello " + myDatenService.load("hello"));
         // überprüfung, ob Zaehlung exisitert. Wenn nicht -> DataNotFoundException
         findByZaehlungenId(zaehlungId);
         if (BooleanUtils.isTrue(options.getDifferenzdatenDarstellen())

@@ -5,10 +5,16 @@
 package de.muenchen.dave.configuration;
 
 import com.hazelcast.config.Config;
+import com.hazelcast.config.DataPersistenceConfig;
 import com.hazelcast.config.IntegrityCheckerConfig;
 import com.hazelcast.config.JoinConfig;
 import com.hazelcast.config.MapConfig;
+import com.hazelcast.config.MapStoreConfig;
+import com.hazelcast.core.DistributedObject;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import de.muenchen.dave.security.CustomUserInfoTokenServices;
+import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -31,6 +37,7 @@ public class CachingConfiguration {
     public static final String LADE_BELASTUNGSPLAN_DTO = "LADE_BELASTUNGSPLAN_DTO";
     public static final String LADE_ZAEHLDATEN_ZEITREIHE_DTO = "LADE_ZAEHLDATEN_ZEITREIHE_DTO";
     public static final String READ_ZAEHLSTELLE_DTO = "READ_ZAEHLSTELLE_DTO";
+    public static final String GEOEAI = "GEOEAI";
     private static final int AUTHENTICATION_CACHE_EXPIRATION_TIME_SECONDS = 60;
 
     // 60*60*12 = 43200 = 12h
@@ -99,6 +106,8 @@ public class CachingConfiguration {
         config.addMapConfig(this.getMapConfig(LADE_PROCESSED_ZAEHLDATEN, MAX_IDLE_TIME_IN_SECONDS));
         config.addMapConfig(this.getMapConfig(LADE_ZAEHLDATEN_ZEITREIHE_DTO, MAX_IDLE_TIME_IN_SECONDS));
         config.addMapConfig(this.getMapConfig(READ_ZAEHLSTELLE_DTO, MAX_IDLE_TIME_IN_SECONDS));
+        config.addMapConfig(this.getDBConfig(GEOEAI, MAX_IDLE_TIME_IN_SECONDS));
+
     }
 
     private MapConfig getMapConfig(final String name, final int maxIdleTime) {
@@ -109,5 +118,60 @@ public class CachingConfiguration {
         mapConfig.setMaxIdleSeconds(maxIdleTime);
         return mapConfig;
     }
+
+    private MapConfig getDBConfig(final String name, final int maxIdleTime) {
+        final MapConfig mapConfig = new MapConfig(GEOEAI);
+        mapConfig.setName(name);
+        MapStoreConfig sc = new MapStoreConfig()
+        .setEnabled(true)
+                .setClassName("de.muenchen.dave.configuration.MyMapStore")
+                .setWriteBatchSize(1000)
+                .setWriteDelaySeconds(0);
+        mapConfig.setMapStoreConfig(sc);
+
+//        HazelcastConfigFactory f;
+//        JdbcStoreConfig jdbcStoreConfig = new JdbcStoreConfig();
+//        JdbcDataStoreFactory factory = new JdbcDataStoreFactory();
+//
+//        factory.setConnectionProvider(new DriverManagerConnectionProvider(
+//
+//                env.getProperty("spring.datasource.url"),
+//
+//                env.getProperty("spring.datasource.username"),
+//
+//                env.getProperty("spring.datasource.password")
+//
+//        ));
+//
+//        factory.setDialect(new OracleDialect());
+//
+//        factory.setBulkLoadBatchSize(1000);
+//
+//        HazelcastJdbcCacheStoreConfig storeConfig = new HazelcastJdbcCacheStoreConfig();
+//
+//        storeConfig.setFactory(factory);
+//
+//        mapConfig.setCacheStoreConfig(storeConfig);
+        return mapConfig;
+    }
+
+//    @Bean
+//    public DataSource dataSource() {
+//
+//        HikariConfig config = new HikariConfig();
+
+//        config.setJdbcUrl(env.getProperty("spring.datasource.url"));
+//
+//        config.setUsername(env.getProperty("spring.datasource.username"));
+//
+//        config.setPassword(env.getProperty("spring.datasource.password"));
+//
+//        config.setDriverClassName(env.getProperty("spring.datasource.driver-class-name"));
+
+//        return new HikariDataSource(config);
+//
+//    }
+
+
 
 }
